@@ -1,0 +1,20 @@
+{
+    "name": "azardo5300/knot",
+    "description": "framework",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "knot\\": "src/",
+            "app\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Azardo5300",
+            "email": "ibrayv2005@gmail.com"
+        }
+    ],
+    "require": {
+        "php-di/php-di": "^7.0"
+    }
+}

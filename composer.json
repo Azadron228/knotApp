@@ -1,0 +1,19 @@
+{
+  "name": "aza/knot-app",
+  "autoload": {
+    "psr-4": {
+      "app\\": "app/",
+      "knot\\": "knot/src/",
+      "": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Azardo5300",
+      "email": "ibrayv2005@gmail.com"
+    }
+  ],
+  "require": {
+    "php-di/php-di": "^7.0"
+  }
+}
