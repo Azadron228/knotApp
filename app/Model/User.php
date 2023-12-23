@@ -6,40 +6,59 @@ use knot\Database\Database;
 
 class User
 {
-  protected Database $database;
+  protected Database $db;
 
   public function __construct(Database $database)
   {
-    $this->database = $database;
+    $this->db = $database;
   }
 
-  public function createUser(string $username, string $email, string $password): void
+  public function createTable()
   {
+    $sqliteQuery = "
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL,
+      email TEXT NOT NULL,
+      password TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    ";
+
+    return $this->db->executeQuery('sqlite_connection', $sqliteQuery);
+  }
+
+  public function createUser(string $username, string $email, string $password)
+  {
+
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO users (username, email, password) VALUES (:username, :email, :password)";
-    $parameters = [
+    $createUser = "INSERT INTO users (username, email, password) VALUES (:username, :email, :password)";
+    $bindings = [
       ':username' => $username,
       ':email' => $email,
       ':password' => $hashedPassword,
     ];
 
-    $this->database->execute('default', $sql, $parameters);
+
+    $result = $this->db->executeQuery('sqlite_connection', $createUser, $bindings);
+
+    return $result->fetch(\PDO::FETCH_ASSOC);
   }
 
-  public function getUserByUsername(string $username): array
+
+  public function getUserByUsername(string $username)
   {
-    $sql = "SELECT * FROM users WHERE username = :username";
-    $parameters = [':username' => $username];
 
-    return $this->database->execute('default', $sql, $parameters);
-  }
+    $getUser = "SELECT * FROM users WHERE username = :username";
+    $bindings = [
+      ':username' => $username,
+    ];
 
-  public function getUserByEmail(string $email): array
-  {
-    $sql = "SELECT * FROM users WHERE email = :email";
-    $parameters = [':email' => $email];
 
-    return $this->database->execute('default', $sql, $parameters);
+    $result =  $this->db->executeQuery('sqlite_connection', $getUser, $bindings);
+
+    return $result->fetch(\PDO::FETCH_ASSOC);
   }
 }

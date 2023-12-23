@@ -13,19 +13,10 @@ class UserController
     $this->userModel = $userModel;
   }
 
-  public function registerUser(string $username, string $email, string $password): void
-  {
-    if ($this->userModel->getUserByUsername($username)) {
-      echo "Username already exists!";
-      return;
-    }
-
-    if ($this->userModel->getUserByEmail($email)) {
-      echo "Email already exists!";
-      return;
-    }
-
-    $this->userModel->createUser($username, $email, $password);
-    echo "User registered successfully!";
+  public function createUser() {
+    $this->userModel->createTable();
+    $res = $this->userModel->createUser("Jotaro", "Kujo@mail.com","123123");
+    var_dump($res);
+    // var_dump($this->userModel->getUserByUsername("Jotaro"));
   }
 }

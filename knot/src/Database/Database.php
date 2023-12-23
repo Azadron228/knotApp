@@ -2,64 +2,90 @@
 
 namespace knot\Database;
 
-use Exception;
-use PDO;
-
 class Database
 {
+  public $connections = [];
 
-  protected array $config;
-  protected $connections = [];
-
-  public function __construct($config)
+  public function addConnection(array $config)
   {
-    $this->config = $config;
+    $driver = $config['driver'] ?? null;
+
+    if (!$driver) {
+      throw new \InvalidArgumentException("Database driver not specified.");
+    }
+
+    switch ($driver) {
+      case 'mysql':
+        $connection = $this->createMySQLConnection($config);
+        break;
+      case 'sqlite':
+        $connection = $this->createSQLiteConnection($config);
+        break;
+      default:
+        throw new \InvalidArgumentException("Unsupported database driver: $driver");
+    }
+
+    $this->connections[$config['name']] = $connection;
   }
 
-  public function connect(string $name): PDO
+  private function createMySQLConnection(array $config)
+  {
+    $host = $config['host'] ?? 'localhost';
+    $port = $config['port'] ?? 3306;
+    $dbname = $config['dbname'] ?? '';
+    $username = $config['username'] ?? '';
+    $password = $config['password'] ?? '';
+
+    $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8";
+
+    try {
+      $pdo = new \PDO($dsn, $username, $password);
+      $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+      return $pdo;
+    } catch (\PDOException $e) {
+      throw new \RuntimeException("MySQL Connection Failed: " . $e->getMessage());
+    }
+  }
+
+  private function createSQLiteConnection(array $config)
+  {
+    $path = $config['path'] ?? '';
+
+    if (empty($path)) {
+      throw new \InvalidArgumentException("SQLite database path not specified.");
+    }
+
+    try {
+      $pdo = new \PDO("sqlite:$path");
+      $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+      return $pdo;
+    } catch (\PDOException $e) {
+      throw new \RuntimeException("SQLite Connection Failed: " . $e->getMessage());
+    }
+  }
+
+  public function getConnection($name)
   {
     if (!isset($this->connections[$name])) {
-      $connection = $this->createConnection($name);
-      $this->connections[$name] = $connection;
+      throw new \InvalidArgumentException("Connection '$name' not found.");
     }
 
     return $this->connections[$name];
   }
 
-  protected function createConnection(string $name): PDO
+  public function executeQuery($connectionName, $sql, $bindings = [])
   {
-    $config = $this->config[$name];
+    $connection = $this->getConnection($connectionName);
 
     try {
-      switch ($config['driver']) {
-        case 'mysql':
-          $dsn = "mysql:host={$config['host']};dbname={$config['database']}";
-          $connection = new PDO($dsn, $config['username'], $config['password']);
-          $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-          return $connection;
-        case 'sqlite':
-          $dsn = "sqlite:{$config['database']}";
-          $connection = new PDO($dsn);
-          $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-          return $connection;
-        default:
-          throw new Exception("Unsupported database driver: {$config['driver']}");
-      }
-    } catch (Exception $e) {
-      throw new DatabaseConnectionException($name, $e->getMessage());
+      $statement = $connection->prepare($sql);
+      $statement->execute($bindings);
+
+      return $statement;
+    } catch (\PDOException $e) {
+      throw new \RuntimeException("Query execution failed: " . $e->getMessage());
     }
-  }
-
-  public function disconnect(string $name): void
-  {
-    unset($this->connections[$name]);
-  }
-
-  public function execute(string $name, string $sql, array $parameters = [])
-  {
-    $connection = $this->connect($name);
-    $statement = $connection->prepare($sql);
-    $statement->execute($parameters);
-    // $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 }

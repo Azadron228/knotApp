@@ -18,13 +18,11 @@ use function DI\get;
 //   PostController::class => create()->constructor(get(Post::class)),
 // ];
 
-$config = include 'DatabaseConfig.php';
+// $config = include 'DatabaseConfig.php';
 
 return [
-  'database_config' => $config,
-  Database::class => create(Database::class)
-    ->constructor(get('database_config')),
   UserController::class => autowire(),
+  Database::class => autowire(),
   User::class => autowire(),
   Post::class => autowire(),
   PostController::class => autowire(),

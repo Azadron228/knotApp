@@ -32,11 +32,8 @@ class Router
     return trim($cleanedPath, '/');
   }
 
-  public function dispatch()
+  public function dispatch($method, $requestPath)
   {
-    $method = $_SERVER['REQUEST_METHOD'];
-    $requestPath = $_SERVER['REQUEST_URI'];
-
     $route = $this->matchRoute($method, $requestPath);
     $params = $this->handlePattern($route->getPath(), explode('/', $this->cleanPath($requestPath)));
 
@@ -56,7 +53,6 @@ class Router
       list($controllerClass, $action) = $handler;
       // $controllerInstance = $this->make($controllerClass);
 
-      var_dump($this->container->getKnownEntryNames());
       $controller = $this->container->get($controllerClass);
       $controller->$action();
 
@@ -157,5 +153,9 @@ class Router
     }
 
     return null;
+  }
+
+  public function getRoutes(){
+    return $this->routes;
   }
 }
