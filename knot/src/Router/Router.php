@@ -6,6 +6,7 @@ use app\Model\User;
 use DI\Container;
 use knot\Database\Database;
 use knot\Router\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class Router
 {
@@ -54,7 +55,7 @@ class Router
       // $controllerInstance = $this->make($controllerClass);
 
       $controller = $this->container->get($controllerClass);
-      $controller->$action();
+      $controller->$action((new Request()));
 
 
       // Call the action method on the controller instance

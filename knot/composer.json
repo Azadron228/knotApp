@@ -5,6 +5,7 @@
     "autoload": {
         "psr-4": {
             "knot\\": "src/",
+            "knot\\Validator\\Rules\\": "knot/src/Validator/Rules/",
             "app\\": "app/"
         }
     },
