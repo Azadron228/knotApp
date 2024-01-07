@@ -13,22 +13,6 @@ class User
     $this->db = $database;
   }
 
-  public function createTable()
-  {
-    $sqliteQuery = "
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT NOT NULL,
-      email TEXT NOT NULL,
-      password TEXT NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    ";
-
-    return $this->db->executeQuery('sqlite_connection', $sqliteQuery);
-  }
-
   public function createUser(string $username, string $email, string $password)
   {
 
@@ -41,12 +25,10 @@ class User
       ':password' => $hashedPassword,
     ];
 
-
     $result = $this->db->executeQuery('sqlite_connection', $createUser, $bindings);
 
     return $result->fetch(\PDO::FETCH_ASSOC);
   }
-
 
   public function getUserByUsername(string $username)
   {

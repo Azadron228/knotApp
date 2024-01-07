@@ -6,13 +6,29 @@ class Database
 {
   public $connections = [];
 
-  public function addConnection(array $config)
+  public function __construct(array $config)
+  {
+    foreach ($config['connections'] as $name => $connectionConfig) {
+      $driver = $connectionConfig['driver'] ?? null;
+
+      switch ($driver) {
+        case 'mysql':
+          $connection = $this->createMySQLConnection($connectionConfig);
+          break;
+        case 'sqlite':
+          $connection = $this->createSQLiteConnection($connectionConfig);
+          break;
+        default:
+          throw new \InvalidArgumentException("Unsupported database driver: $driver");
+      }
+
+      $this->connections[$name] = $connection;
+    }
+  }
+
+  public function condwastruct(array $config)
   {
     $driver = $config['driver'] ?? null;
-
-    if (!$driver) {
-      throw new \InvalidArgumentException("Database driver not specified.");
-    }
 
     switch ($driver) {
       case 'mysql':
@@ -66,6 +82,7 @@ class Database
     }
   }
 
+
   public function getConnection($name)
   {
     if (!isset($this->connections[$name])) {
@@ -75,9 +92,37 @@ class Database
     return $this->connections[$name];
   }
 
-  public function executeQuery($connectionName, $sql, $bindings = [])
+
+  public function executeQuery($connectionName = null, $sql, $bindings = [])
   {
-    $connection = $this->getConnection($connectionName);
+    if ($connectionName === null) {
+      throw new \InvalidArgumentException("Connection name must be specified for query execution.");
+    }
+
+    if (!isset($this->connections[$connectionName])) {
+      throw new \InvalidArgumentException("Connection '$connectionName' not found.");
+    }
+
+    $connection = $this->connections[$connectionName];
+
+    try {
+      $statement = $connection->prepare($sql);
+      $statement->execute($bindings);
+
+      return $statement;
+    } catch (\PDOException $e) {
+      throw new \RuntimeException("Query execution failed: " . $e->getMessage());
+    }
+  }
+
+
+  public function exedwacuteQuery($connectionName = null, $sql, $bindings = [])
+  {
+    // if ($connectionName == null) {
+    $connection = $this->getConnection('sqlite_connection');
+    // } else {
+    // $connection = $this->getConnection('default');
+    // }
 
     try {
       $statement = $connection->prepare($sql);

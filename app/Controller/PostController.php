@@ -15,6 +15,5 @@ class PostController {
 
   public function create() 
   {
-    $this->post->createPostTable();
   }
 }

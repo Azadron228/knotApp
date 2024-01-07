@@ -12,7 +12,6 @@ class HelloController
   }
   public function index()
   {
-    $this->post->create();
     echo "Hello index";
   }
 }

@@ -1,0 +1,16 @@
+<?php
+
+namespace app\Migrations;
+
+use knot\Database\Migration;
+
+class DummyClass extends Migration
+{
+  public function up(): void
+  {
+  }
+
+  public function down(): void
+  {
+  }
+}

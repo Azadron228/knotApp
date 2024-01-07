@@ -1,7 +1,7 @@
 <?php
 
 return [
-  'sqlite' => [
+  'sqlite_connection' => [
     'driver' => 'sqlite',
     'database' => 'db.sqlite',
   ]

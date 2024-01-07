@@ -9,8 +9,8 @@ class UserValidator extends Validator
   public function validate(array $data)
   {
     $rules = [
-      'username' => 'required|max:255',
-      'email' => 'required|max:255',
+      'username' => 'required|min:3',
+      'email' => 'required',
       'password' => 'required|max:255',
     ];
 

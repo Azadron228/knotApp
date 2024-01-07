@@ -2,11 +2,10 @@
 
 namespace knot\Router;
 
-use app\Model\User;
 use DI\Container;
-use knot\Database\Database;
 use knot\Router\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Router
 {
@@ -33,7 +32,7 @@ class Router
     return trim($cleanedPath, '/');
   }
 
-  public function dispatch($method, $requestPath)
+  public function dispatch($method, $requestPath): Response
   {
     $route = $this->matchRoute($method, $requestPath);
     $params = $this->handlePattern($route->getPath(), explode('/', $this->cleanPath($requestPath)));
@@ -41,8 +40,9 @@ class Router
     if ($route) {
       $this->executeMiddleware($route);
       $this->callHandler($route->handler, $params);
+      return new Response('Not Found', Response::HTTP_NOT_FOUND);
     } else {
-      echo "404 Not Found";
+      return new Response('Not Found', Response::HTTP_NOT_FOUND);
     }
   }
 
@@ -52,7 +52,6 @@ class Router
       call_user_func_array($handler, $params);
     } elseif (is_array($handler)) {
       list($controllerClass, $action) = $handler;
-      // $controllerInstance = $this->make($controllerClass);
 
       $controller = $this->container->get($controllerClass);
       $controller->$action((new Request()));
@@ -156,7 +155,8 @@ class Router
     return null;
   }
 
-  public function getRoutes(){
+  public function getRoutes()
+  {
     return $this->routes;
   }
 }
