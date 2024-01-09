@@ -13,7 +13,8 @@ class PostController {
     $this->post = $post;
   }
 
-  public function create() 
+  public function hello() 
   {
+    echo " PostController ";
   }
 }

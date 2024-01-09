@@ -14,6 +14,11 @@ class Post
     $this->db = $db;
   }
 
+  public function hello() {
+    echo "PostModel";
+    # code...
+  }
+
   public function getPostById($postId)
   {
     $query = "SELECT * FROM posts WHERE id = :id";

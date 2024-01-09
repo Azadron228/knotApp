@@ -1,13 +1,16 @@
 <?php
 
 use app\Kernel;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\ServerRequest;
+
+define('APP_ROOT', dirname(__DIR__) . '/app/');
 
 require __DIR__ . '/../vendor/autoload.php';
 
 
 $kernel = new Kernel();
-$kernel->handleRequest(new Request, new Response);
+$request = new ServerRequest($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+$response = new Response();
 
-
+$result = $kernel->handleRequest($request);

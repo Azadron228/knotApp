@@ -64,8 +64,6 @@ class Logger
 
     $message = $this->interpolate($message, $context);
 
-    var_dump($message);
-
     return $this->writer($message, $levelName);
   }
 

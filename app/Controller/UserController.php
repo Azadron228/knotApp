@@ -22,7 +22,6 @@ class UserController
 
     if ($isValid) {
       $validated = $validator->getValidatedData();
-      var_dump($validated);
       $this->userModel->createUser(
         $validated['username'],
         $validated['email'],
