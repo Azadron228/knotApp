@@ -63,6 +63,7 @@ class MigrateCommand extends Command
       $migrationClass = new $fullClassName($this->container->get(Database::class));
 
 
+      $migrationClass->down();
       $migrationClass->up();
 
       if (class_exists($className) && is_subclass_of($className, Migration::class)) {

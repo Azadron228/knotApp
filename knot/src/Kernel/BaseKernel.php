@@ -7,107 +7,121 @@ use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
-use knot\Database\Database;
+use knot\DB\Database;
+use knot\DB\DatabaseInterface;
 use knot\Exception\ErrorHandler;
 use knot\Kernel\KernelInterface;
 use knot\Logger\Logger;
 use knot\Middleware\MiddlewareHandler;
-use knot\Middleware\QueueRequestHandler;
 use knot\Routing\Router;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 
 class BaseKernel implements KernelInterface
 {
-    protected $middleware = [
-      // AppMiddleware::class,
-    ];
+  protected $middleware = [
+    // AppMiddleware::class,
+  ];
 
-    protected Router $router;
-    protected Logger $logger;
-    protected Container $container;
-    protected ErrorHandler $errorHandler;
+  protected Router $router;
+  protected Logger $logger;
+  protected Container $container;
+  protected ErrorHandler $errorHandler;
+  protected Database $database;
 
-    public function __construct()
-    {
 
-        // $this->loadEnvironment();
-        // $this->setupErrorHandler();
-        $this->initContainer();
-        $this->registerServices();
-        $this->setupLogger();
-    }
+  public function __construct()
+  {
+    var_dump($this->getRootDir());
 
-    protected function loadEnvironment()
-    {
-        $dotenv = Dotenv::createImmutable(APP_ROOT); // Adjust the path to your .env file
-        $dotenv->load();
-    }
+    $this->loadEnvironment();
+    $this->setupLogger();
+    // $this->setupErrorHandler();
+    $this->setupContainer();
+    $this->registerServices();
+  }
 
-    public function setupLogger()
-    {
-        $logger = new Logger('/home/azardo/knotApp/log.txt');
-        $this->logger = $logger;
-    }
+  protected function loadEnvironment()
+  {
+    $dotenv = Dotenv::createImmutable($this->getRootDir());
+    $dotenv->load();
+  }
 
-    public function initContainer(): ContainerInterface
-    {
-        $builder = new ContainerBuilder();
-        $config = APP_ROOT . '/config/services.php';
+  public function getRootDir()
+  {
+    return dirname(dirname(dirname(__DIR__)));
+  }
 
-        $builder->addDefinitions($config);
-        $this->container = $builder->build();
-        return $this->container;
-    }
+  public function setupLogger()
+  {
+    $logger = new Logger($this->getRootDir() . '/log.txt');
+    $this->logger = $logger;
+  }
 
-    public function registerServices()
-    {
-        $this->initDb();
-        $this->initRoutes();
-    }
+  public function setupContainer(): ContainerInterface
+  {
+    $builder = new ContainerBuilder();
+    $config = $this->getRootDir() . '/app/config/services.php';
 
-    public function initDb()
-    {
-        $this->container->set(Database::class, function () {
-            $config = include APP_ROOT . '/config/database.php';
-            $db = new Database($config);
-            return $db;
-        });
-    }
+    $builder->addDefinitions($config);
+    $this->container = $builder->build();
+    return $this->container;
+  }
 
-    public function initRoutes()
-    {
-        $this->router = new Router($this->container);
-        $routes = require APP_ROOT . '/routes/routes.php';
-        $routes($this->router);
-        return $this->router;
-    }
+  public function registerServices()
+  {
+    $this->setupDb();
+    $this->setupRoutes();
+  }
 
-    public function setupErrorHandler()
-    {
-        $this->errorHandler = new ErrorHandler();
-        $this->errorHandler->register();
-    }
+  public function setupDb()
+  {
+    $this->container->set(Database::class, function () {
+      // $config = include $this->getRootDir() . '/app/config/database.php';
 
-    public function getContainer(): ContainerInterface
-    {
-        $this->initContainer();
-        $this->registerServices();
-        return $this->container;
-    }
+      $config = [
+        'driver'   => 'sqlite',
+        'database' => 'database.sqlite'
+      ];
+      $database = new Database($config);
+      return $database;
+    });
+  }
 
-    public function getLogger()
-    {
-        return $this->logger;
-    }
+  public function setupRoutes()
+  {
+    $this->router = new Router($this->container);
+    $routes = require $this->getRootDir() . '/app/routes/routes.php';
+    $routes($this->router);
+    return $this->router;
+  }
 
-    public function handleRequest(ServerRequest $request)
-    {
-        $RequesHandler = new MiddlewareHandler(new Response(), $this->middleware, $this->container);
-        $RequesHandler->handle($request);
+  public function setupErrorHandler()
+  {
+    $this->errorHandler = new ErrorHandler($this->getLogger());
+    $this->errorHandler->register();
+  }
 
-        $requestUri = explode('/', trim(parse_url($_SERVER["REQUEST_URI"])["path"], '/'));
-        $response = $this->router->matchRoute($requestUri);
+  public function getContainer(): ContainerInterface
+  {
+    return $this->container;
+  }
 
-        return $response;
-    }
+  public function getLogger(): LoggerInterface
+  {
+    return $this->logger;
+  }
+
+  public function handleMiddleware($request)
+  {
+    $RequesHandler = new MiddlewareHandler(new Response(), $this->container, $this->middleware);
+    $RequesHandler->handle($request);
+  }
+
+  public function handleRequest(ServerRequestInterface $request)
+  {
+    $this->handleMiddleware($request);
+    $this->router->matchRoute($request);
+  }
 }

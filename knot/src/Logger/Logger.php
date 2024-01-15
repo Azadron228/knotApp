@@ -2,7 +2,10 @@
 
 namespace knot\Logger;
 
-class Logger
+use Psr\Log\LoggerInterface;
+use Stringable;
+
+class Logger implements LoggerInterface
 {
   public const DEBUG = 7;
   public const INFO = 6;
@@ -31,26 +34,38 @@ class Logger
     $this->logFilePath = $logFilePath;
   }
 
-  public function debug($message, array $context = [])
+  public function debug(string|Stringable $message, array $context = []): void
   {
-    return $this->log(self::DEBUG, $message, $context);
+    $this->log(self::DEBUG, $message, $context);
   }
 
-  public function info($message, array $context = [])
+  public function alert(string|Stringable $message, array $context = []): void
   {
-    return $this->log(self::DEBUG, $message, $context);
   }
-  public function notice($message, array $context = [])
+
+  public function critical(string|Stringable $message, array $context = []): void
   {
-    return $this->log(self::DEBUG, $message, $context);
   }
-  public function error($message, array $context = [])
+
+  public function warning(string|Stringable $message, array $context = []): void
   {
-    return $this->log(self::ERROR, $message, $context);
   }
-  public function emergency($message, array $context = [])
+
+  public function info(string|Stringable $message, array $context = []): void
   {
-    return $this->log(self::EMERGENCY, $message, $context);
+    $this->log(self::DEBUG, $message, $context);
+  }
+  public function notice(string|Stringable $message, array $context = []): void
+  {
+    $this->log(self::DEBUG, $message, $context);
+  }
+  public function error(string|Stringable $message, array $context = []): void
+  {
+    $this->log(self::ERROR, $message, $context);
+  }
+  public function emergency(string|Stringable $message, array $context = []): void
+  {
+    $this->log(self::EMERGENCY, $message, $context);
   }
 
   public function writer($message, $levelName)
@@ -58,13 +73,13 @@ class Logger
     file_put_contents($this->logFilePath, "[$levelName] $message" . PHP_EOL, FILE_APPEND);
   }
 
-  public function log($level, $message, array $context = array())
+  public function log($level, string|Stringable $message, array $context = []): void
   {
     $levelName = self::levels[$level];
 
     $message = $this->interpolate($message, $context);
 
-    return $this->writer($message, $levelName);
+    $this->writer($message, $levelName);
   }
 
   /**

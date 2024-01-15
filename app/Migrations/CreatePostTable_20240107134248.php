@@ -9,7 +9,7 @@ class CreatePostTable_20240107134248 extends Migration
   public function up(): void
   {
 
-    $q = 'CREATE TABLE posts (
+    $q = 'CREATE TABLE Post (
       id INT PRIMARY KEY,
       userid INT,
       title VARCHAR(255),
@@ -21,5 +21,7 @@ class CreatePostTable_20240107134248 extends Migration
 
   public function down(): void
   {
+    $q = 'DROP TABLE IF EXISTS Post;';
+    $this->database->executeQuery('sqlite', $q);
   }
 }

@@ -4,8 +4,8 @@ namespace knot\Routing;
 
 class Route
 {
-  private $uri;
-  private $method;
+  private string $uri;
+  private string $method;
   private $action;
   private $middleware;
   private $name;
@@ -18,7 +18,6 @@ class Route
     $this->middleware = $middleware;
     $this->name = $name;
   }
-
 
   public function middleware(array $middleware)
   {

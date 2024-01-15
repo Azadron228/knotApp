@@ -2,20 +2,28 @@
 
 namespace knot\Validator;
 
+use knot\DB\Database;
 use knot\Validator\Rules\MaxRule;
 use knot\Validator\Rules\MinRule;
 use knot\Validator\Rules\RequiredRule;
+use knot\Validator\Rules\UniqueRule;
 
 class Validator
 {
   protected $errors = [];
   protected $validatedData = [];
+  protected Database $database;
 
   protected $ruleMappings = [
-    'required' => RequiredRule::class,
-    'max' => MaxRule::class,
-    'min' => MinRule::class,
+    'required'  => RequiredRule::class,
+    'max'       => MaxRule::class,
+    'min'       => MinRule::class,
+    'unique'    => UniqueRule::class,
   ];
+
+  public function __construct(Database $database) {
+    $this->database = $database;
+  }
 
   public function make(array $data, array $rules)
   {
@@ -34,13 +42,14 @@ class Validator
     [$ruleName, $parameters] = $this->parseRule($rule);
 
     if (!isset($this->ruleMappings[$ruleName])) {
-        throw new \InvalidArgumentException("Rule '$ruleName' not found in the mappings.");
+      throw new \InvalidArgumentException("Rule '$ruleName' not found in the mappings.");
     }
 
     $ruleClass = $this->ruleMappings[$ruleName];
 
     if (class_exists($ruleClass)) {
-      $ruleInstance = new $ruleClass;
+
+      $ruleInstance = new $ruleClass($this->database);
 
       $errorMessage = $ruleInstance->validate($field, $value, $parameters);
 

@@ -36,3 +36,19 @@ Stack trace:
 #2 /home/azardo/knotApp/app/Kernel.php(103): knot\Routing\Router->matchRoute()
 #3 /home/azardo/knotApp/public/index.php(14): app\Kernel->handleRequest()
 #4 {main}
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred

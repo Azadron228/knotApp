@@ -3,7 +3,7 @@
         'name' => 'aza/knot-app',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '97cb1055757f3814983a507f895de44302249829',
+        'reference' => '9a68b5b3ab8e5894dfc4b172157a0da057c251fb',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'aza/knot-app' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '97cb1055757f3814983a507f895de44302249829',
+            'reference' => '9a68b5b3ab8e5894dfc4b172157a0da057c251fb',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -118,6 +118,24 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'nyholm/psr7' => array(
+            'pretty_version' => '1.8.1',
+            'version' => '1.8.1.0',
+            'reference' => 'aa5fc277a4f5508013d571341ade0c3886d4d00e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nyholm/psr7',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'nyholm/psr7-server' => array(
+            'pretty_version' => '1.1.0',
+            'version' => '1.1.0.0',
+            'reference' => '4335801d851f554ca43fa6e7d2602141538854dc',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nyholm/psr7-server',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'orno/di' => array(
             'dev_requirement' => false,
             'replaced' => array(
@@ -142,6 +160,12 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'php-http/message-factory-implementation' => array(
+            'dev_requirement' => false,
+            'provided' => array(
+                0 => '1.0',
+            ),
+        ),
         'phpoption/phpoption' => array(
             'pretty_version' => '1.9.2',
             'version' => '1.9.2.0',
@@ -150,6 +174,15 @@
             'install_path' => __DIR__ . '/../phpoption/phpoption',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'phpstan/phpstan' => array(
+            'pretty_version' => '1.10.55',
+            'version' => '1.10.55.0',
+            'reference' => '9a88f9d18ddf4cf54c922fbeac16c4cb164c5949',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpstan/phpstan',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'psr/container' => array(
             'pretty_version' => '2.0.2',

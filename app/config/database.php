@@ -7,7 +7,7 @@ return [
     'sqlite' => [
       'driver' => 'sqlite',
       'path' => 'database.sqlite'
-    ],
+    ]
 
     // 'sqlite_testing' => [
     //   'driver' => 'sqlite',

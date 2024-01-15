@@ -6,7 +6,7 @@ use DI\Container;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use knot\Middleware\MiddlewareHandler;
-use knot\Middleware\Stack;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Router
@@ -17,7 +17,7 @@ class Router
   protected array $routes = [];
   protected Container $container;
 
-  public function __construct(Container $container)
+  public function __construct(ContainerInterface $container)
   {
     $this->container = $container;
   }
@@ -44,37 +44,39 @@ class Router
     return [$processedUri, $parameters];
   }
 
-  public function matchRoute(array $requestUri): void
+  public function matchRoute(ServerRequestInterface $request)
   {
+    $requestMethod = $request->getMethod();
+    $requestUri = $request->getUri();
+    $parsedUri = explode('/', trim(parse_url($requestUri)["path"], '/'));
+
     foreach ($this->routes as $route) {
-      if ($route->getMethod() === $_SERVER["REQUEST_METHOD"]) {
-        $pattern = $this->handle($route, $requestUri);
+      if ($route->getMethod() === $requestMethod) {
+        $pattern = $this->handle($route, $parsedUri);
 
         $uri = $pattern[0];
         $params = $pattern[1];
 
-        if ($requestUri === $uri) {
+        if ($parsedUri === $uri) {
 
-          $middlewareInstances = [];
-
-          foreach ($route->getMiddleware() as $middlewareClass) {
-            $middlewareInstances[] = new $middlewareClass();
-          }
-
-          $RequestHandler = new MiddlewareHandler(new Response(), $route->getMiddleware(), $this->container);
-          $RequestHandler->handle(new ServerRequest($_SERVER['REQUEST_METHOD'], implode('/', $requestUri)));
-
-          $this->executeClosure($route, $params);
+          // $this->callMiddleware($route, $request);
+          $this->executeClosure($route, $params, $request);
 
           return;
         }
       }
     }
 
-    http_response_code(404);
+    return (new Response())->withStatus(404);
   }
 
-  public function executeClosure($route, $params)
+  public function callMiddleware($route, $request)
+  {
+    $RequestHandler = new MiddlewareHandler(new Response(), $this->container, $route->getMiddleware() ?? []);
+    $RequestHandler->handle($request);
+  }
+
+  public function executeClosure($route, $params, $request)
   {
     $action = $route->getAction();
 
@@ -89,15 +91,15 @@ class Router
     $controller = $this->container->get($route->getAction()[0]);
     $action = $route->getAction()[1];
 
-    $this->callController($params, $action, $controller);
+    return $this->callController($params, $action, $controller, $request);
   }
 
-  protected function callController($params, $action, $controller): void
+  protected function callController($params, $action, $controller, $request)
   {
     if (!isset($params)) {
-      $controller->{$action}();
+      $controller->{$action}($request);
     } else {
-      $controller->{$action}(...$params);
+      $controller->{$action}($request,...$params);
     }
   }
 }

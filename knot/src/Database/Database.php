@@ -92,8 +92,7 @@ class Database
     return $this->connections[$name];
   }
 
-
-  public function executeQuery($connectionName = null, $sql, $bindings = [])
+  public function executeQuery($connectionName, $sql, $bindings = [])
   {
     if ($connectionName === null) {
       throw new \InvalidArgumentException("Connection name must be specified for query execution.");
@@ -104,25 +103,6 @@ class Database
     }
 
     $connection = $this->connections[$connectionName];
-
-    try {
-      $statement = $connection->prepare($sql);
-      $statement->execute($bindings);
-
-      return $statement;
-    } catch (\PDOException $e) {
-      throw new \RuntimeException("Query execution failed: " . $e->getMessage());
-    }
-  }
-
-
-  public function exedwacuteQuery($connectionName = null, $sql, $bindings = [])
-  {
-    // if ($connectionName == null) {
-    $connection = $this->getConnection('sqlite_connection');
-    // } else {
-    // $connection = $this->getConnection('default');
-    // }
 
     try {
       $statement = $connection->prepare($sql);

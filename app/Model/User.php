@@ -2,7 +2,7 @@
 
 namespace app\Model;
 
-use knot\Database\Database;
+use knot\DB\Database;
 
 class User
 {
@@ -15,7 +15,6 @@ class User
 
   public function createUser(string $username, string $email, string $password)
   {
-
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     $createUser = "INSERT INTO users (username, email, password) VALUES (:username, :email, :password)";
@@ -25,7 +24,7 @@ class User
       ':password' => $hashedPassword,
     ];
 
-    $result = $this->db->executeQuery('sqlite_connection', $createUser, $bindings);
+    $result = $this->db->executeQuery($createUser, $bindings);
 
     return $result->fetch(\PDO::FETCH_ASSOC);
   }
@@ -38,8 +37,7 @@ class User
       ':username' => $username,
     ];
 
-
-    $result =  $this->db->executeQuery('sqlite_connection', $getUser, $bindings);
+    $result =  $this->db->executeQuery($getUser, $bindings);
 
     return $result->fetch(\PDO::FETCH_ASSOC);
   }

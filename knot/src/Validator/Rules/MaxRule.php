@@ -2,9 +2,10 @@
 
 namespace knot\Validator\Rules;
 
-class MaxRule
+class MaxRule implements RuleInterface
 {
-  public function validate($field, $value, $parameters)
+
+  public function validate($field, $value, $parameters = [])
   {
     $maxValue = $parameters[0];
 

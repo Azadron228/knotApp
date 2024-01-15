@@ -3,6 +3,8 @@
 namespace app\Controller;
 
 use app\Model\Post;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Stream;
 
 class HelloController
 {
@@ -10,9 +12,10 @@ class HelloController
   public function __construct(Post $post) {
     $this->post = $post;
   }
-  public function index()
+  public function index(): Response
   {
-    $this->post->hello();
-    echo " HelloController ";
+    $response = new Response();
+    $response->withStatus(300);
+    return $response;
   }
 }
