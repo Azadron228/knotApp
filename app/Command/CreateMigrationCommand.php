@@ -15,14 +15,13 @@ class CreateMigrationCommand extends Command
     $this
       ->setName('migrate:create')
       ->setDescription('Create a new database migration')
-      ->addArgument('name', InputArgument::REQUIRED, 'The name of the migration')
-      ->addOption('path', null, InputOption::VALUE_OPTIONAL, 'The directory where migrations are stored', 'src/Migrations');
+      ->addArgument('name', InputArgument::REQUIRED, 'The name of the migration');
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int
   {
     $migrationName = $input->getArgument('name');
-    $migrationPath = $input->getOption('path');
+    $migrationPath = APP_ROOT . 'database/Migrations/';
 
     $this->createMigration($migrationName, $migrationPath, $output);
 
@@ -31,8 +30,7 @@ class CreateMigrationCommand extends Command
 
   private function createMigration($migrationName, $migrationPath, $output)
   {
-    // Example:
-    $migrationContent = file_get_contents('/home/azardo/knotApp/app/Stubs/Migration.stub');
+    $migrationContent = file_get_contents(APP_ROOT . 'app/Stubs/Migration.stub');
 
     $migrationFileName = $migrationPath . '/' . $migrationName . '_' . date('YmdHis') . '.php';
     $migrationName = $migrationName . '_' . date('YmdHis');

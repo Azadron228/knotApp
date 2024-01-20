@@ -1,47 +1,5 @@
-[Debug] This is a debug message
-[Debug] This is a nigg message
-[Debug] This is a nigg message
-[Error] ErrorException: This is a custom warning message in /home/azardo/knotApp/app/Controller/HelloController.php:15
-Stack trace:
-#0 [internal function]: knot\Exception\ErrorHandler::handleErrors()
-#1 /home/azardo/knotApp/app/Controller/HelloController.php(15): trigger_error()
-#2 /home/azardo/knotApp/knot/src/Router/Router.php(57): app\Controller\HelloController->index()
-#3 /home/azardo/knotApp/knot/src/Router/Router.php(42): knot\Router\Router->callHandler()
-#4 /home/azardo/knotApp/app/Kernel.php(92): knot\Router\Router->dispatch()
-#5 /home/azardo/knotApp/public/index.php(11): app\Kernel->handleRequest()
-#6 {main}
-[Error] ErrorException: Undefined variable $params in /home/azardo/knotApp/knot/src/Routing/Router.php:86
-Stack trace:
-#0 /home/azardo/knotApp/knot/src/Routing/Router.php(86): knot\Exception\ErrorHandler::handleErrors()
-#1 /home/azardo/knotApp/app/Kernel.php(97): knot\Routing\Router->matchRoute()
-#2 /home/azardo/knotApp/public/index.php(11): app\Kernel->handleRequest()
-#3 {main}
-[Error] ErrorException: Undefined variable $params in /home/azardo/knotApp/knot/src/Routing/Router.php:86
-Stack trace:
-#0 /home/azardo/knotApp/knot/src/Routing/Router.php(86): knot\Exception\ErrorHandler::handleErrors()
-#1 /home/azardo/knotApp/app/Kernel.php(97): knot\Routing\Router->matchRoute()
-#2 /home/azardo/knotApp/public/index.php(11): app\Kernel->handleRequest()
-#3 {main}
-[Error] ErrorException: Undefined variable $request in /home/azardo/knotApp/knot/src/Routing/Router.php:97
-Stack trace:
-#0 /home/azardo/knotApp/knot/src/Routing/Router.php(97): knot\Exception\ErrorHandler::handleErrors()
-#1 /home/azardo/knotApp/knot/src/Routing/Router.php(68): knot\Routing\Router->callmiddleware()
-#2 /home/azardo/knotApp/app/Kernel.php(103): knot\Routing\Router->matchRoute()
-#3 /home/azardo/knotApp/public/index.php(14): app\Kernel->handleRequest()
-#4 {main}
-[Error] ErrorException: Undefined variable $request in /home/azardo/knotApp/knot/src/Routing/Router.php:97
-Stack trace:
-#0 /home/azardo/knotApp/knot/src/Routing/Router.php(97): knot\Exception\ErrorHandler::handleErrors()
-#1 /home/azardo/knotApp/knot/src/Routing/Router.php(68): knot\Routing\Router->callmiddleware()
-#2 /home/azardo/knotApp/app/Kernel.php(103): knot\Routing\Router->matchRoute()
-#3 /home/azardo/knotApp/public/index.php(14): app\Kernel->handleRequest()
-#4 {main}
-[Error] An error occurred
 [Error] An exception occurred
-[Error] An error occurred
-[Error] An error occurred
 [Error] An exception occurred
-[Error] An error occurred
 [Error] An error occurred
 [Error] An exception occurred
 [Error] An error occurred
@@ -50,5 +8,80 @@ Stack trace:
 [Error] An exception occurred
 [Error] An exception occurred
 [Error] An exception occurred
+[Error] An error occurred
 [Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
+[Error] An exception occurred
+[Error] An error occurred
 [Error] An exception occurred

@@ -2,13 +2,12 @@
 
 namespace knot\Kernel;
 
-use DI\Container;
-use DI\ContainerBuilder;
+define('APP_ROOT', dirname(__DIR__, 3) . '/');
+
 use Dotenv\Dotenv;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\ServerRequest;
+use knot\Container\Container;
 use knot\DB\Database;
-use knot\DB\DatabaseInterface;
 use knot\Exception\ErrorHandler;
 use knot\Kernel\KernelInterface;
 use knot\Logger\Logger;
@@ -30,14 +29,12 @@ class BaseKernel implements KernelInterface
   protected ErrorHandler $errorHandler;
   protected Database $database;
 
-
   public function __construct()
   {
-    var_dump($this->getRootDir());
-
+    session_start();
     $this->loadEnvironment();
     $this->setupLogger();
-    // $this->setupErrorHandler();
+    $this->setupErrorHandler();
     $this->setupContainer();
     $this->registerServices();
   }
@@ -48,9 +45,8 @@ class BaseKernel implements KernelInterface
     $dotenv->load();
   }
 
-  public function getRootDir()
-  {
-    return dirname(dirname(dirname(__DIR__)));
+  public function getRootDir(){
+    return dirname(__DIR__, 3) . '/';
   }
 
   public function setupLogger()
@@ -61,11 +57,9 @@ class BaseKernel implements KernelInterface
 
   public function setupContainer(): ContainerInterface
   {
-    $builder = new ContainerBuilder();
-    $config = $this->getRootDir() . '/app/config/services.php';
+    $config = require_once APP_ROOT . '/app/config/services.php';
 
-    $builder->addDefinitions($config);
-    $this->container = $builder->build();
+    $this->container = new Container($config);
     return $this->container;
   }
 
@@ -78,14 +72,12 @@ class BaseKernel implements KernelInterface
   public function setupDb()
   {
     $this->container->set(Database::class, function () {
-      // $config = include $this->getRootDir() . '/app/config/database.php';
-
+      // $config = include APP_ROOT . 'config/database.php';
       $config = [
         'driver'   => 'sqlite',
-        'database' => 'database.sqlite'
+        'database' => APP_ROOT . "/database/database.sqlite"
       ];
-      $database = new Database($config);
-      return $database;
+      return new Database($config);
     });
   }
 

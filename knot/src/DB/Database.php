@@ -5,6 +5,7 @@ namespace knot\DB;
 use knot\DB\DatabaseInterface;
 use PDO;
 use PDOException;
+use PDOStatement;
 use RuntimeException;
 
 class Database implements DatabaseInterface
@@ -38,5 +39,38 @@ class Database implements DatabaseInterface
     } catch (PDOException $e) {
       throw new RuntimeException("Error executing query: " . $e->getMessage());
     }
+  }
+
+  public function faetch(string $sql, array $params = [], $types = [])
+  {
+    $statement = $this->executeQuery($sql, $params, $types);
+    return $statement->fetch(PDO::FETCH_ASSOC);
+  }
+
+
+  public function fetch(PDOStatement $statement): array
+  {
+    try {
+      return $statement->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      throw new RuntimeException("Error fetching results: " . $e->getMessage());
+    }
+  }
+
+
+  public function fetchAll(PDOStatement $statement): array
+  {
+    try {
+      return $statement->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+      throw new RuntimeException("Error fetching results: " . $e->getMessage());
+    }
+  }
+
+
+  public function fetchAlll(string $sql, array $params = [], $types = [])
+  {
+    $statement = $this->executeQuery($sql, $params, $types);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 }

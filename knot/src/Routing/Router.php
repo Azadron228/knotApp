@@ -2,9 +2,8 @@
 
 namespace knot\Routing;
 
-use DI\Container;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\ServerRequest;
+use knot\Container\Container;
 use knot\Middleware\MiddlewareHandler;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -59,7 +58,7 @@ class Router
 
         if ($parsedUri === $uri) {
 
-          // $this->callMiddleware($route, $request);
+          $this->callMiddleware($route, $request);
           $this->executeClosure($route, $params, $request);
 
           return;

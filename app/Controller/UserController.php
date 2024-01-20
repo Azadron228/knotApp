@@ -5,49 +5,65 @@ namespace app\Controller;
 use app\Model\User;
 use app\Validator\UserValidator;
 use DI\Container;
+use knot\Auth\Auth;
 use knot\DB\Database;
+use Nyholm\Psr7\Response;
+use Nyholm\Psr7\Stream;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class UserController
 {
-  protected User $userModel;
-  protected Container $container;
+  protected User $user;
   protected Database $database;
 
-  public function __construct(User $userModel, Database $database)
+  public function __construct(User $user, Database $database)
   {
-    $this->userModel = $userModel;
+    $this->user = $user;
     $this->database = $database;
   }
 
-  public function createUser(RequestInterface $request, ResponseInterface $response)
+  public function createUser(RequestInterface $request)
   {
     $data = json_decode($request->getBody()->getContents(), true);
+
+    var_dump($data);
+
     $validator = new UserValidator($this->database);
     $isValid = $validator->validate($data);
 
     if ($isValid) {
-      $validated = $validator->getValidatedData();
-      $this->userModel->createUser(
-        $validated['username'],
-        $validated['email'],
-        $validated['password']
-      );
-
-      $responseBody = json_encode(['message' => 'User created successfully']);
-      $response = $response->withStatus(201) // Created status code
-        ->withHeader('Content-Type', 'application/json')
-        ->withBody($streamFactory->createStream($responseBody));
+      $user = $validator->getValidatedData();
+      $this->user->createUser($user);
+      Auth::login($user);
     } else {
       $errors = $validator->getErrors();
-
-      $errors = $validator->getErrors();
-      $responseBody = json_encode(['errors' => $errors]);
-      $response = $response->withStatus(400) // Bad Request status code
-        ->withHeader('Content-Type', 'application/json')
-        ->withBody($streamFactory->createStream($responseBody));
+      echo $errors;
     }
-    return $response;
+  }
+
+  public function logout(RequestInterface $request)
+  {
+    $data = json_decode($request->getBody()->getContents(), true);
+    var_dump($data);
+  }
+
+  public function login(RequestInterface $request)
+  {
+    $data = json_decode($request->getBody()->getContents(), true);
+    $user = $this->user->getUserByUsername($data['username']);
+
+    $res = Auth::attempt($user, $data['password']);
+    var_dump($res);
+  }
+
+  public function user(RequestInterface $requestInterface, $username)
+  {
+
+    // $data = json_decode($request->getBody()->getContents(), true);
+    $res = $this->user->getUserByUsername($username);
+    // var_dump($res);
+    $a = Auth::isAuthenticated();
+    var_dump($a);
   }
 }

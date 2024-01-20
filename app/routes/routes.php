@@ -10,5 +10,7 @@ use knot\Routing\Router;
 return function(Router $router){
   // $router->get('/user/{name}/post/{id}', [HelloController::class, 'index'])->middleware([HelloMiddleware::class, ExampleMiddleware::class]);
   $router->post('/register', [UserController::class, 'createUser']);
+  $router->post('/login', [UserController::class, 'login']);
+  $router->get('/user/{username}', [UserController::class, 'user']);
   // $router->get('/create', [PostController::class, 'create']);
 };
